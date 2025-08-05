@@ -1,25 +1,13 @@
-import { ChevronDownIcon, SearchIcon, TimeIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  Flex,
-  Input,
-  Text,
-  Image,
-  Menu,
-  MenuItem,
-  MenuList,
-  MenuButton,
-} from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutAPI } from "../Redux/Auth/auth.action";
 
 const DashboardNavbar = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
-  // let username = userData.fullname.split(" ")[0];
-  let username = userData
+  let username = userData;
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,96 +16,164 @@ const DashboardNavbar = () => {
     dispatch(logoutAPI());
     navigate("/");
   };
+
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev);
+  };
+
   return (
-    <Box border="1px solid gray" borderLeft={"none"} w="100%" h="7%">
-      <Flex justifyContent="space-between">
-        <Box
-          // border="1px solid blue"
-          h="50"
-          mt="2"
-          w="25%"
-          ml="5"
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        border: "1px solid gray",
+        borderLeft: "none",
+        width: "100%",
+        height: "7%",
+        padding: "10px",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ width: "25%", marginLeft: "20px" }}>
+        <div style={{ position: "relative" }}>
+          <i
+            className="fas fa-search"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "8px",
+              transform: "translateY(-50%)",
+              color: "gray",
+            }}
+          ></i>
+          <input
+            type="text"
+            placeholder="Search"
+            style={{
+              height: "32px",
+              paddingLeft: "25px",
+              borderRadius: "4px",
+              border: "1px solid lightblue",
+              width: "100%",
+            }}
+          />
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          width: "60%",
+          justifyContent: "flex-end",
+          gap: 20,
+          marginRight: 20,
+        }}
+      >
+        <button
+          style={{
+            backgroundColor: "teal",
+            color: "white",
+            border: "none",
+            padding: "6px 10px",
+            borderRadius: "7px",
+            cursor: "pointer",
+          }}
         >
-          <Flex>
-            <SearchIcon h="5" position="absolute" mt="3.5" ml="" />
-            <Input
-              h="8"
-              borderRadius="4"
-              border="lightblue"
-              mt="2"
-              placeholder="Search"
-            ></Input>
-          </Flex>
-        </Box>
-        <Box
-          // border="1px solid red"
-          h="50"
-          mt="2"
-          w="45%"
+          Start Free Trial
+        </button>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            border: "1px solid black",
+            borderRadius: 7,
+            padding: "5px 10px",
+          }}
         >
-          <Flex justifyContent="space-evenly">
-            <Button mt="1.5" h="8" colorScheme="teal" size="md" ml="50">
-              Start Free Trial
-            </Button>
-            <TimeIcon
-              cursor={"pointer"}
-              mt="2"
-              w={8}
-              h={8}
-              position="absolute"
-            ></TimeIcon>
-            <Text mt="2" ml="7" cursor={"pointer"}>
-              Start Timer
-            </Text>
-            <Box w="12%" mt="2" marginLeft="8">
-              <Menu>
-                <Flex
-                  marginLeft="-50px"
-                  display="flex"
-                  gap="10px"
-                  alignItems="center"
+          <i
+            className="fas fa-clock"
+            style={{ fontSize: "20px", cursor: "pointer" }}
+          ></i>
+          <span style={{ cursor: "pointer" }}>Start Timer</span>
+        </div>
+
+        <div style={{ position: "relative" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              border: "1px solid black",
+              borderRadius: 7,
+              padding: "5px 10px",
+            }}
+            onClick={toggleDropdown}
+          >
+            <i className="fas fa-user"></i>
+            <span>
+              {username} <i className="fas fa-angle-down"></i>
+            </span>
+          </div>
+
+          {dropdownOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "40px",
+                right: "0",
+                backgroundColor: "white",
+                minWidth: "200px",
+                border: "1px solid #ccc",
+                zIndex: "1",
+              }}
+            >
+              {[
+                "Get Bonsai Free",
+                "Help Center",
+                "What's New",
+                "My Subscription",
+                "Apps & Integrations",
+                "Payments",
+                "Setting",
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "10px 15px",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#f0f0f0")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "white")
+                  }
                 >
-                  <Box>
-                    <i class="fa-solid fa-user"></i>
-                  </Box>
-                  <MenuButton>
-                    {username}
-                    <i class="fa-solid fa-angle-down"></i>
-                  </MenuButton>
-                </Flex>
-                <MenuList marginLeft="35%" mt="2">
-                  <MenuItem minH="48px" gap="30px">
-                    <span>Get Bonsai Free</span>
-                  </MenuItem>
-                  <MenuItem minH="40px" gap="30px">
-                    <span>Help Center</span>
-                  </MenuItem>
-                  <MenuItem minH="40px" gap="30px">
-                    <span>What's New</span>
-                  </MenuItem>
-                  <MenuItem minH="40px" gap="30px">
-                    <span>My Subscription</span>
-                  </MenuItem>
-                  <MenuItem minH="40px" gap="30px">
-                    <span>Apps & Integrations</span>
-                  </MenuItem>
-                  <MenuItem minH="40px" gap="30px">
-                    <span>Payments</span>
-                  </MenuItem>
-                  <MenuItem minH="40px" gap="30px">
-                    <span>Setting</span>
-                  </MenuItem>
-                  <MenuItem minH="40px" gap="30px">
-                    <span onClick={handleLogout}>Logout</span>
-                  </MenuItem>
-                </MenuList>
-              </Menu>
-              {/* </Flex> */}
-            </Box>
-          </Flex>
-        </Box>
-      </Flex>
-    </Box>
+                  {item}
+                </div>
+              ))}
+              <div
+                style={{ padding: "10px 15px", cursor: "pointer" }}
+                onClick={handleLogout}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#f0f0f0")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "white")
+                }
+              >
+                Logout
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
